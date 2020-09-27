@@ -1,0 +1,11 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ES5",
+        "allowSyntheticDefaultImports": true
+    },
+    "files": [
+        "./src/index.ts",
+        "./src/index.d.ts"
+    ]
+}
