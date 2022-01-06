@@ -1,9 +1,9 @@
 type LockedAccount = {
-    readonly id: string;
-    readonly name: string;
+     id: string;
+    name: string;
 }
 
-const user1: LockedAccount = {
+const user1: Cus_Readonly<LockedAccount> = {
     id: '12',
     name: 'guoshi'
 }
