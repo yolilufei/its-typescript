@@ -1,4 +1,4 @@
-type T0 = Cus_Exclude<"a" | "b" | "c", "a">;
+type T0 = Exclude<"a" | "b" | "c", "a">;
      
 type T1 = Cus_Exclude<"a" | "b" | "c", "a" | "b">;
      
