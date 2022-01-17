@@ -1,13 +1,43 @@
 
+## 元祖(tuple) use extends
+
+- 当两个测试类型元素个数和类型完全一致时
 
 ```typescript
-type T1 = 'a' | 'b' | 'c' | 'd';
-type T2 = 'd';
+    type t1 = [string, number];
+    type t2 = ['2', 1];
+    type t3 = t2 extends t1 ? true : false; // true
+```
 
-type T3_Obvious = T1 extends T2 ? never : T1;
+- 当两个测试类型元素个数不一致时
 
-// ok
-type T3<T, U> = T extends U ? never : T;
+```typescript
+    type t1 = [string, number];
+    type t2 = ['2'];
+    type t3 = t2 extends t1 ? true : false; // false
+```
 
-type T4 = T3<T1, T2>;
+- 当两个测试类型元素类型不一致时
+
+```typescript
+    type t1 = [string, number];
+    type t2 = [2, 1];
+    type t3 = t2 extends t1 ? true : false; // false
+```
+
+**可以看出，元祖使用extends类似于每个对应的元素类型进行比较，当且仅当 元素个数 和 对应的元素类型 都一致时为 true**
+
+## Union use extends
+
+
+```typescript
+type t1 = string | number;
+
+type t2 = 12;
+
+type t3 = t2 extends t1 ? true : false; // true
+
+type t4 = '12';
+
+type t5 = t2 extends t1 ? true : false; // true
 ```
