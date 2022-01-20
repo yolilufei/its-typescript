@@ -29,7 +29,6 @@
 
 ## Union use extends
 
-
 ```typescript
 type t1 = string | number;
 
@@ -40,4 +39,12 @@ type t3 = t2 extends t1 ? true : false; // true
 type t4 = '12';
 
 type t5 = t2 extends t1 ? true : false; // true
+
+type t6 = boolean;
+
+type t7 = t6 extends t1 ? true : false; // false
+
+type t8 = boolean ｜ string | number;;
+
+type t9 = t6 extends t1 ? true : false; // false
 ```
