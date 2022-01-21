@@ -101,3 +101,18 @@ interface T2 extends T1 {
 }
 
 ```
+
+**函数重载**
+```typescript
+interface T1 {
+    create: (name: string) => void;
+}
+
+interface T2 extends T1 {
+    create: (age: number) => void;
+}
+
+interface T3 extends T2 {
+    create: (name: number) => void;
+}
+```
