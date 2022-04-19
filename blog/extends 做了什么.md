@@ -107,12 +107,16 @@ interface T2 extends T1 {
 interface T1 {
     create: (name: string) => void;
 }
-
+// error: number can noy assignable string
 interface T2 extends T1 {
     create: (age: number) => void;
 }
 
 interface T3 extends T2 {
     create: (name: number) => void;
+}
+// 实际的T3
+interface T3 {
+    create
 }
 ```

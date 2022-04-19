@@ -1,0 +1,26 @@
+{
+  "name": "learn-ts",
+  "version": "1.0.0",
+  "description": "学习ts",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yolilufei/learn-ts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yolilufei/learn-ts/issues"
+  },
+  "homepage": "https://github.com/yolilufei/learn-ts#readme"
+}
