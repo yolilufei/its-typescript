@@ -1,3 +1,8 @@
+---
+title: tsconfig.json 详解
+tag:  typescript
+categories: Typescript
+---
 # tsconfig 属性详解
 
 <table>
@@ -234,30 +239,96 @@ function fn(s) {
 }
 ```
 
-- noFallthroughCasesInSwitch: true **不抛出错误**
+- noImplicitAny: false **不抛出错误**
 ```js
-
-const demo = (type: number) => {
-    switch(type) {
-        case 0: // ok，空的 case 是允许的，不会当作错误
-            // console.log('it is 0');
-        case 1:
-            console.log('it is 1');
-            break;
-    }
+function fn(s) {
+//will ignore
+  console.log(s.subtr(3));
 }
 ```
 
-- noFallthroughCasesInSwitch: false
-```js
+## noImplicitOverride（禁止不明确的重写）
+**属性解释**   
+**noImplicitOverride** 应用于 `subClass extends ParentClass` 场景下，当子类**重写**父类方法时，需要在重写的方法前添加`override`关键字，否则 typescript 就会抛出错误。
 
-const demo = (type: number) => {
-    switch(type) {
-        case 0: // ignore
-            console.log('it is 0');
-        case 1:
-            console.log('it is 1');
-            break;
-    }
-}
+**举个栗子**
+- noImplicitOverride: true **抛出错误**
 ```js
+class Album {
+  download() {
+    // Default behavior
+  }
+}
+ 
+class SharedAlbum extends Album {
+  download(x: number) { // 抛出错误，重写的方法前必须添加 override 关键字
+    // Override to get info from many sources
+  }  
+}
+```
+
+- noImplicitAny: false **不抛出错误**
+```js
+class Album {
+  download() {
+    // Default behavior
+  }
+}
+ 
+class SharedAlbum extends Album {
+  download() { // 忽略错误，正常执行
+    // Override to get info from many sources
+  }  
+}
+```
+**看以下场景**  
+- 重写的方法有额外参数
+```js
+class Album {
+  download() {
+    // Default behavior
+  }
+}
+ 
+class SharedAlbum extends Album {
+  download(x: number) { // 抛出错误：download 方法和 Album 的方法不匹配，即使 noImplicitOverride 设置为false也不能重写
+    // Override to get info from many sources
+  }  
+}
+``` 
+
+- 重写的方法可见性(member visibility)低于父类方法可见性
+```js
+class Album {
+  download() {
+    // Default behavior
+  }
+}
+ 
+class SharedAlbum extends Album {
+  private download(x: number) { // 抛出错误：download 方法和 Album 的方法不匹配，即使 noImplicitOverride 设置为false也不能重写
+    // Override to get info from many sources
+  }  
+}
+``` 
+- 覆写的方法前加 static 关键字会被当作子类自己定义的方法，和 override 无关，也就不会抛出错误
+
+```js
+class Album {
+  download() {
+    // Default behavior
+  }
+}
+ 
+class SharedAlbum extends Album {
+  static download(x: number) { // 不抛出错误
+    // Override to get info from many sources
+  }  
+}
+``` 
+
+关于这个错误，就涉及到**重写**和**重载**的概念了。下面简单介绍下两者的特点和区别，具体概念可以[看这里](https://www.runoob.com/java/java-override-overload.html)     
+**typescript override的规则如下**
+1. 重写方法的参数列表必须完全与被重写的方法的相同,否则不能称其为重写而是重载.
+2. 重写方法的访问修饰符一定要大于被重写方法的访问修饰符（public>protected>private）
+3. 被重写的方法不能为private，否则在其子类中只是新定义了一个方法，并没有对其进行重写.
