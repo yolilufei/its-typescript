@@ -40,7 +40,19 @@
             <td>exactOptionalPropertyTypes</td>
             <td>boolean</td>
             <td>true</td>
-            <td>严格按照可选属性类型列表定义属性值</td>
+            <td>严格按照可选属性类型列表定义属性值，不可赋值为undefined</td>
+        </tr>
+        <tr>
+            <td>noFallthroughCasesInSwitch</td>
+            <td>boolean</td>
+            <td>true</td>
+            <td>是否允许 switch 中存在**空（不包含 break 或者 return）** case</td>
+        </tr>
+        <tr>
+            <td>noImplicitAny</td>
+            <td>boolean</td>
+            <td>true</td>
+            <td>是否禁止属性类型是隐式any。true: 禁止; false: 忽略;</td>
         </tr>
     </tbody>
 </table>
@@ -159,3 +171,93 @@ const user: UserDefaults = {
     // 没有定义 color 也是 ok 的
 }
 ```
+
+## noFallthroughCasesInSwitch
+**属性解释**   
+不允许 switch 表达式中存在 `fallthrough` case，即如果某个 case 内不存在 `break` 或 `return` 关键字，会抛出错误。
+注意：只有当该 `case` 中存在代码逻辑但是无 `break`或`return` 时才会抛出错误。如果 `case` 内无逻辑代码则不会抛出错误。
+
+**举个栗子**
+- noFallthroughCasesInSwitch: true **抛出错误**
+```js
+
+const demo = (type: number) => {
+    switch(type) {
+        case 0: // error：Fallthrough case in switch.(7029)
+            console.log('it is 0');
+        case 1:
+            console.log('it is 1');
+            break;
+    }
+}
+```
+
+- noFallthroughCasesInSwitch: true **不抛出错误**
+```js
+
+const demo = (type: number) => {
+    switch(type) {
+        case 0: // ok，空的 case 是允许的，不会当作错误
+            // console.log('it is 0');
+        case 1:
+            console.log('it is 1');
+            break;
+    }
+}
+```
+
+- noFallthroughCasesInSwitch: false
+```js
+
+const demo = (type: number) => {
+    switch(type) {
+        case 0: // ignore
+            console.log('it is 0');
+        case 1:
+            console.log('it is 1');
+            break;
+    }
+}
+```
+
+## noImplicitAny
+**属性解释**   
+typescript 会提供一个兜底类型 `any` 给那些**没有声明类型且无法推断出类型的属性**，`noImplicitAny` 的作用就是提供一个开关给用户决定是否禁止提供隐式any类型给上述类型。
+
+**举个栗子**
+- noImplicitAny: true **抛出错误**
+```js
+
+function fn(s) {
+//Parameter 's' implicitly has an 'any' type.
+  console.log(s.subtr(3));
+}
+```
+
+- noFallthroughCasesInSwitch: true **不抛出错误**
+```js
+
+const demo = (type: number) => {
+    switch(type) {
+        case 0: // ok，空的 case 是允许的，不会当作错误
+            // console.log('it is 0');
+        case 1:
+            console.log('it is 1');
+            break;
+    }
+}
+```
+
+- noFallthroughCasesInSwitch: false
+```js
+
+const demo = (type: number) => {
+    switch(type) {
+        case 0: // ignore
+            console.log('it is 0');
+        case 1:
+            console.log('it is 1');
+            break;
+    }
+}
+```js
