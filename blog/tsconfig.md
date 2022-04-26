@@ -24,7 +24,7 @@ categories: Typescript
         <tr>
             <td rowspan="20" style="vertical-align: middle;">compilerOptions</td>
             <td rowspan="10">类型检查(Type Checking)</td>
-            <td>allowUnreachableCode</td>
+            <td>[allowUnreachableCode](#allowUnreachableCode)</td>
             <td>boolean | undefined</td>
             <td>undefined</td>
             <td>代码中允许存在永远不会执行的代码</td>
@@ -70,6 +70,12 @@ categories: Typescript
             <td>boolean</td>
             <td>false</td>
             <td>禁止代码块有不明确的返回值。true: 禁止; false: 忽略;</td>
+        </tr>
+        <tr>
+            <td>noImplicitThis</td>
+            <td>boolean</td>
+            <td>true</td>
+            <td>禁止函数内部使用没有明确类型的this。true: 禁止; false: 忽略;</td>
         </tr>
     </tbody>
 </table>
