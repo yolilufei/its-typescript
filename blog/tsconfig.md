@@ -379,7 +379,7 @@ function f(x) {
 }
 ```
 
-- noImplicitAny: false **不抛出错误**
+- noImplicitReturns: false **不抛出错误**
 ```js
 function f(x) {
   // ignore 忽略不明确返回值的情况
