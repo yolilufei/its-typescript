@@ -6,10 +6,10 @@ categories: Typescript
 # tsconfig 属性详解
 
 |一级属性|分类|二级属性|类型|默认值|解释|版本|
-| :--- | :--- | :--- | :--- | :--- | :--- |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 |extend|||||继承外部tsconfig|[2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#configuration-inheritance)|
-|compilerOptions|Type Checking(类型检查)|[allowUnreachableCode](#allowUnreachableCode)|boolean | undefined|undefined|代码中允许存在永远不会执行的代码|
-|compilerOptions|Type Checking(类型检查)|[allowUnusedLabels](#allowUnusedLabels)|boolean | undefined|undefined|代码中允许存在不使用的标记语句|
+|compilerOptions|Type Checking(类型检查)|[allowUnreachableCode](#allowUnreachableCode)|boolean\undefined|undefined|代码中允许存在永远不会执行的代码|
+|compilerOptions|Type Checking(类型检查)|[allowUnusedLabels](#allowUnusedLabels)|boolean | undefined\undefined|代码中允许存在不使用的标记语句|
 |compilerOptions|Type Checking(类型检查)|[alwaysStrict](#alwaysStrict)|boolean|true|代码始终保持严格模式|
 |compilerOptions|Type Checking(类型检查)|[exactOptionalPropertyTypes](#exactOptionalPropertyTypes)|boolean|true|严格按照可选属性类型列表定义属性值，不可赋值为undefined|
 |compilerOptions|Type Checking(类型检查)|[noFallthroughCasesInSwitch](#noFallthroughCasesInSwitch)|boolean|true|不允许 switch 中存在**空（不包含 break 或者 return）** case|
