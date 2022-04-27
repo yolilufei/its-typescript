@@ -5,80 +5,23 @@ categories: Typescript
 ---
 # tsconfig 属性详解
 
-<table>
-    <thead>
-        <th>一级属性</th>
-        <th>分类</th>
-        <th>二级属性</th>
-        <th>类型</th>
-        <th>默认值</th>
-        <th>解释</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td colspan="3" style="text-align: center">extend</td>
-            <td></td>
-            <td></td>
-            <td>继承外部tsconfig</td>
-        </tr>
-        <tr>
-            <td rowspan="20" style="vertical-align: middle;">compilerOptions</td>
-            <td rowspan="10">类型检查(Type Checking)</td>
-            <td>[allowUnreachableCode](#allowUnreachableCode)</td>
-            <td>boolean | undefined</td>
-            <td>undefined</td>
-            <td>代码中允许存在永远不会执行的代码</td>
-        </tr>
-         <tr>
-            <td>allowUnusedLabels</td>
-            <td>boolean | undefined</td>
-            <td>undefined</td>
-            <td>代码中允许存在不使用的标记语句</td>
-        </tr>
-        <tr>
-            <td>alwaysStrict</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>代码始终保持严格模式</td>
-        </tr>
-         <tr>
-            <td>exactOptionalPropertyTypes</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>严格按照可选属性类型列表定义属性值，不可赋值为undefined</td>
-        </tr>
-        <tr>
-            <td>noFallthroughCasesInSwitch</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>是否允许 switch 中存在**空（不包含 break 或者 return）** case</td>
-        </tr>
-        <tr>
-            <td>noImplicitAny</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>是否禁止属性类型是隐式any。true: 禁止; false: 忽略;</td>
-        </tr>
-        <tr>
-            <td>noImplicitOverride</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>禁止不明确的重写。true: 禁止; false: 忽略;</td>
-        </tr>
-        <tr>
-            <td>noImplicitReturns</td>
-            <td>boolean</td>
-            <td>false</td>
-            <td>禁止代码块有不明确的返回值。true: 禁止; false: 忽略;</td>
-        </tr>
-        <tr>
-            <td>noImplicitThis</td>
-            <td>boolean</td>
-            <td>true</td>
-            <td>禁止函数内部使用没有明确类型的this。true: 禁止; false: 忽略;</td>
-        </tr>
-    </tbody>
-</table>
+|一级属性|分类|二级属性|类型|默认值|解释|版本|
+| :--- | :--- | :--- | :--- | :--- | :--- |
+|extend|||||继承外部tsconfig|[2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#configuration-inheritance)|
+|compilerOptions|Type Checking(类型检查)|[allowUnreachableCode](#allowUnreachableCode)|boolean | undefined|undefined|代码中允许存在永远不会执行的代码|
+|compilerOptions|Type Checking(类型检查)|[allowUnusedLabels](#allowUnusedLabels)|boolean | undefined|undefined|代码中允许存在不使用的标记语句|
+|compilerOptions|Type Checking(类型检查)|[alwaysStrict](#alwaysStrict)|boolean|true|代码始终保持严格模式|
+|compilerOptions|Type Checking(类型检查)|[exactOptionalPropertyTypes](#exactOptionalPropertyTypes)|boolean|true|严格按照可选属性类型列表定义属性值，不可赋值为undefined|
+|compilerOptions|Type Checking(类型检查)|[noFallthroughCasesInSwitch](#noFallthroughCasesInSwitch)|boolean|true|不允许 switch 中存在**空（不包含 break 或者 return）** case|
+|compilerOptions|Type Checking(类型检查)|[noImplicitAny](#noImplicitAny)|boolean|true|禁止属性类型是隐式any。true: 禁止; false: 忽略|
+|compilerOptions|Type Checking(类型检查)|[noImplicitOverride](#noImplicitOverride)|boolean|true|禁止不明确的重写。true: 禁止; false: 忽略|
+|compilerOptions|Type Checking(类型检查)|[noImplicitReturns](#noImplicitReturns)|boolean|false|禁止代码块有不明确的返回值。true: 禁止; false: 忽略|
+|compilerOptions|Type Checking(类型检查)|[noImplicitThis](#noImplicitThis)|boolean|true|禁止函数内部使用没有明确类型的this。true: 禁止; false: 忽略|
+|compilerOptions|Type Checking(类型检查)|[noPropertyAccessFromIndexSignature](#noPropertyAccessFromIndexSignature)|boolean|true|禁止使用`.`连接符访问未明确定义的属性|
+|compilerOptions|Type Checking(类型检查)|[noUncheckedIndexedAccess](https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess)|boolean|false|为 true 时，当使用索引属性时，会默认为索引属性添加`undefined`属性值|
+|compilerOptions|Type Checking(类型检查)|[noUnusedLocals](https://www.typescriptlang.org/tsconfig#noUnusedLocals)|boolean|false|为 true 时，当存在未使用的局部变量时，会抛出错误|
+|compilerOptions|Type Checking(类型检查)|[noUnusedParameters](https://www.typescriptlang.org/tsconfig#noUnusedParameters)|boolean|false|为 true 时，当存在未使用的参数时，会抛出错误|
+|compilerOptions|Type Checking(类型检查)|[strictBindCallApply](https://www.typescriptlang.org/tsconfig#strictBindCallApply)|boolean|false|为 true ，当使用`call`、`bind`、`apply`调用函数时，提供正确的类型检查|
 
 ## allowUnreachableCode
 
@@ -476,3 +419,64 @@ const demo = function () {
 }
 ```
 
+## noPropertyAccessFromIndexSignature
+
+> 禁止使用`.`连接符访问未明确定义的属性
+还记得`index signature`（索引签名） 吗？我们在温习下，想了解详情的[传送门](https://www.typescriptlang.org/docs/handbook/2/objects.html#index-signatures)    
+
+假设我们要定义一个类型，但是我们不知道有哪些属性，typescript 允许我们使用索引签名的方式定义属性。像这样： 
+```tsx
+interface MaybeArray {
+  [x: string]: number;
+}
+
+const myArray: MaybeArray = createArray();
+const secondItem = myArray[1];
+```
+
+这样非常方便我们定义类型，不过在某些场景下也会潜藏风险，比如这个栗子：
+```tsx
+interface BothNamedPropertyAndIndexSignature {
+  name: 'a' | 'b' | 'c';
+  [key: string]: string;
+}
+
+const demo = (p: BothNamedPropertyAndIndexSignature) => {
+  return p.text;
+}
+```
+
+在上面的栗子中，demo 方法返回了`p.text`，但是 `p`有没有`text`属性我们不得而知，因为我们使用的是索引签名，所以代码不会报错。同时 typescript 还会做返回值的类型推断（string）， 当`p`不存在`text`属性时，返回值是 undefined，这就造成了潜在的风险。   
+
+为了避免这个问题，typescript 提供了 `noPropertyAccessFromIndexSignature` flag，帮助我们明确该如何使用索引签名属性。   
+
+具体使用方式就是使用`[]`来访问索引签名定义的属性，以便提醒使用者该属性不一定存在。
+
+**栗子**
+
+- noPropertyAccessFromIndexSignature: true **抛出错误**
+  
+**因为作用域问题触发error**
+```tsx
+interface BothNamedPropertyAndIndexSignature {
+  name: 'a' | 'b' | 'c';
+  [key: string]: string;
+}
+
+const demo = (p: BothNamedPropertyAndIndexSignature) => {
+  return p.text; // 属性 'text' 是索引签名, 所以必须通过 ['text'] 访问
+}
+```
+
+- noPropertyAccessFromIndexSignature: false **不抛出错误**
+
+```tsx
+interface BothNamedPropertyAndIndexSignature {
+  name: 'a' | 'b' | 'c';
+  [key: string]: string;
+}
+
+const demo = (p: BothNamedPropertyAndIndexSignature) => {
+  return p.text; // 忽略错误
+}
+```
