@@ -94,7 +94,7 @@ Unreachable code 也可以被称为 **dead code**,是无法在任何上下文中
 
 **栗子：**
 
-```js
+```tsx
 const hasUnreachableCode = (a: number) => {
     if (a > 1) {
         throw 'error';
@@ -124,7 +124,7 @@ eslint 同样支持设置规则`'no-unreachable': "error"`来避免程序中存�
 
 标记语句现在很少使用了，因此这个类型设置大家估计都不是很熟悉，我们栗子：熟悉下
 
-```js
+```tsx
 let str = '';
 
 loop1: // loop1 这个标记语句是有用的，在 for 循环里用到了
@@ -140,7 +140,7 @@ console.log(str); // 0234
 
 **下面这个是没有用到的标记语句**
 
-```js
+```tsx
 foo: { // foo 没有用到
     console.log('face');
     console.log('unuse');
@@ -152,15 +152,16 @@ console.log('swap');
 
 eslint 同样支持设置规则`'no-unused-labels': "error"`来避免程序中存在不可执行的代码。
 
-
-
 ## exactOptionalPropertyTypes
-**属性解释**   
+
+**属性解释**
 在 **type** 或者 **interface** 中定义可选属性时(也就是 ?: 定义的属性)，当 **exactOptionalPropertyTypes** 为 **true** 时，可选属性不能赋值为 undefined。为 **false**时，则允许赋值为 undefined。
 
 **栗子**
+
 - exactOptionalPropertyTypes: true
-```js
+
+```tsx
 
 interface UserDefaults {
     color?: 'light' | 'dark';
@@ -172,7 +173,8 @@ const user: UserDefaults = {
 ```
 
 - exactOptionalPropertyTypes: false
-```js
+
+```tsx
 
 interface UserDefaults {
     color?: 'light' | 'dark';
@@ -182,10 +184,12 @@ const user: UserDefaults = {
     color: undefined // ok
 }
 ```
+
 **其他**  
 
 **exactOptionalPropertyTypes** 不影响可选属性是否定义，也就是不定义 color 属性时是允许的
-```js
+
+```tsx
 interface UserDefaults {
     color?: 'light' | 'dark';
 }
@@ -196,13 +200,16 @@ const user: UserDefaults = {
 ```
 
 ## noFallthroughCasesInSwitch
-**属性解释**   
+
+**属性解释**
 不允许 switch 表达式中存在 `fallthrough` case，即如果某个 case 内不存在 `break` 或 `return` 关键字，会抛出错误。
 注意：只有当该 `case` 中存在代码逻辑但是无 `break`或`return` 时才会抛出错误。如果 `case` 内无逻辑代码则不会抛出错误。
 
 **栗子**
+
 - noFallthroughCasesInSwitch: true **抛出错误**
-```js
+
+```tsx
 
 const demo = (type: number) => {
     switch(type) {
@@ -216,7 +223,8 @@ const demo = (type: number) => {
 ```
 
 - noFallthroughCasesInSwitch: true **不抛出错误**
-```js
+
+```tsx
 
 const demo = (type: number) => {
     switch(type) {
@@ -230,7 +238,8 @@ const demo = (type: number) => {
 ```
 
 - noFallthroughCasesInSwitch: false
-```js
+
+```tsx
 
 const demo = (type: number) => {
     switch(type) {
@@ -244,12 +253,15 @@ const demo = (type: number) => {
 ```
 
 ## noImplicitAny
-**属性解释**   
+
+**属性解释**
 typescript 会提供一个兜底类型 `any` 给那些**没有声明类型且无法推断出类型的属性**，`noImplicitAny` 的作用就是提供一个开关给用户决定是否禁止提供隐式any类型给上述类型。
 
 **栗子**
+
 - noImplicitAny: true **抛出错误**
-```js
+
+```tsx
 
 function fn(s) {
 //Parameter 's' implicitly has an 'any' type.
@@ -258,7 +270,8 @@ function fn(s) {
 ```
 
 - noImplicitAny: false **不抛出错误**
-```js
+
+```tsx
 function fn(s) {
 //will ignore
   console.log(s.subtr(3));
@@ -266,12 +279,15 @@ function fn(s) {
 ```
 
 ## noImplicitOverride（禁止不明确的重写）
-**属性解释**   
+
+**属性解释**
 **noImplicitOverride** 应用于 `subClass extends ParentClass` 场景下，当子类**重写**父类方法时，需要在重写的方法前添加`override`关键字，否则 typescript 就会抛出错误。
 
 **栗子**
+
 - noImplicitOverride: true **抛出错误**
-```js
+
+```tsx
 class Album {
   download() {
     // Default behavior
@@ -286,7 +302,8 @@ class SharedAlbum extends Album {
 ```
 
 - noImplicitAny: false **不抛出错误**
-```js
+
+```tsx
 class Album {
   download() {
     // Default behavior
@@ -299,9 +316,12 @@ class SharedAlbum extends Album {
   }  
 }
 ```
+
 **看以下场景**  
+
 - 重写的方法有额外参数
-```js
+
+```tsx
 class Album {
   download() {
     // Default behavior
@@ -313,10 +333,11 @@ class SharedAlbum extends Album {
     // Override to get info from many sources
   }  
 }
-``` 
+```
 
 - 重写的方法可见性(member visibility)低于父类方法可见性
-```js
+
+```tsx
 class Album {
   download() {
     // Default behavior
@@ -328,10 +349,11 @@ class SharedAlbum extends Album {
     // Override to get info from many sources
   }  
 }
-``` 
+```
+
 - 覆写的方法前加 static 关键字会被当作子类自己定义的方法，和 override 无关，也就不会抛出错误
 
-```js
+```tsx
 class Album {
   download() {
     // Default behavior
@@ -343,18 +365,21 @@ class SharedAlbum extends Album {
     // Override to get info from many sources
   }  
 }
-``` 
+```
 
-关于这个错误，就涉及到**重写**和**重载**的概念了。下面简单介绍下两者的特点和区别，具体概念可以[看这里](https://www.runoob.com/java/java-override-overload.html)     
+关于这个错误，就涉及到**重写**和**重载**的概念了。下面简单介绍下两者的特点和区别，具体概念可以[看这里](https://www.runoob.com/java/java-override-overload.html)
 **typescript override的规则如下**
+
 1. 重写方法的参数列表必须完全与被重写的方法的相同,否则不能称其为重写而是重载.
 2. 重写方法的访问修饰符一定要大于被重写方法的访问修饰符（public>protected>private）
 3. 被重写的方法不能为private，否则在其子类中只是新定义了一个方法，并没有对其进行重写.
 
 ## noImplicitReturns
-**属性解释**   
+
+**属性解释**
 js 中对于没有返回值的代码块会默认返回undefined，这在一些场景中会不符合要求, 例如以下代码：
-```js
+
+```tsx
 const add = (n) => {
     if (typeof n === 'number') {
         return n;
@@ -365,11 +390,14 @@ const result = add(1) + 2; // ok. output 3
 
 const result = add('1') + 2; // error. NaN
 ```
+
 typescript 提供了`noImplicitReturns`属性帮助检查函数中是否存在不明确返回值的代码块
 
 **栗子**
+
 - noImplicitReturns: true **抛出错误**
-```js
+
+```tsx
 function f(x) {
   // Error: Not all code paths return a value.
   if (x) {
@@ -380,7 +408,8 @@ function f(x) {
 ```
 
 - noImplicitReturns: false **不抛出错误**
-```js
+
+```tsx
 function f(x) {
   // ignore 忽略不明确返回值的情况
   if (x) {
@@ -391,7 +420,8 @@ function f(x) {
 ```
 
 - 当函数指定明确返回类型时，任意代码块返回值类型不符合要求都会抛出错误，即使 `noImplicitAny: false`
-```js
+
+```tsx
 function f(x) {
   // Error: Function lacks ending return statement and return type does not include 'undefined'
   if (x) {
@@ -400,3 +430,49 @@ function f(x) {
   // implicitly returns `undefined`
 }
 ```
+
+## noImplicitThis
+
+> 当`this`没有明确的类型定义时，抛出错误
+
+**栗子**
+
+- noImplicitReturns: true **抛出错误**
+  
+**因为作用域问题触发error**
+```tsx
+class Rectangle {
+  width: number;
+  height: number;
+ 
+  constructor(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+ 
+  getAreaFunction() {
+    return function () {
+      return this.width * this.height; // 'this' implicitly has type 'any' because it does not have a type annotation.
+    };
+  }
+}
+```
+可以通过在函数参数中为`this`定义类型的方式解决错误
+```tsx
+getAreaFunction() {
+    return function (this: Rectangle) {
+      return this.width * this.height; 
+    };
+  }
+```
+
+
+- noImplicitThis: false **不抛出错误**
+
+```tsx
+
+const demo = function () {
+  return this.AbortController; // 忽略未定义类型错误
+}
+```
+
