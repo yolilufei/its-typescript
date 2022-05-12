@@ -22,6 +22,10 @@ categories: Typescript
 |compilerOptions|Type Checking(类型检查)|[noUnusedLocals](https://www.typescriptlang.org/tsconfig#noUnusedLocals)|boolean|false|为 true 时，当存在未使用的局部变量时，会抛出错误|
 |compilerOptions|Type Checking(类型检查)|[noUnusedParameters](https://www.typescriptlang.org/tsconfig#noUnusedParameters)|boolean|false|为 true 时，当存在未使用的参数时，会抛出错误|
 |compilerOptions|Type Checking(类型检查)|[strictBindCallApply](https://www.typescriptlang.org/tsconfig#strictBindCallApply)|boolean|false|为 true ，当使用`call`、`bind`、`apply`调用函数时，提供正确的类型检查|
+|compilerOptions|Type Checking(类型检查)|[strictFunctionTypes](https://www.typescriptlang.org/tsconfig#strictFunctionTypes)|boolean|false|为 true ，对函数参数类型严格把控|
+|compilerOptions|Type Checking(类型检查)|[strictNullChecks](https://www.typescriptlang.org/tsconfig#strictNullChecks)|boolean|false|为 true ，对`null` 和 `undefined` 类型严格把控|
+|compilerOptions|Type Checking(类型检查)|[strictPropertyInitialization](#strictPropertyInitialization)|boolean|false|为 true ，当类属性需要赋值但未赋值时抛出错误|
+|compilerOptions|Type Checking(类型检查)|[useUnknownInCatchVariables](#useUnknownInCatchVariables)|boolean|false|为 true ，catch 块中的 error 参数类型设置为 unknown|
 
 ## allowUnreachableCode
 
@@ -478,5 +482,57 @@ interface BothNamedPropertyAndIndexSignature {
 
 const demo = (p: BothNamedPropertyAndIndexSignature) => {
   return p.text; // 忽略错误
+}
+```
+
+## strictPropertyInitialization
+> 当设置为 true 时，TS 会检查类属性是否需要初始化(可以理解为初始值)，当需要初始化的属性未初始化时，抛出错误
+
+**栗子**
+
+- strictPropertyInitialization: true **抛出错误**
+
+```tsx
+class UserAccount {
+  name: string;
+  accountType = "user";
+  email: string;  // error，email未初始化
+  address: string | undefined;
+ 
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+```
+在上面例子中：
+- `this.name` 明确初始化
+- `this.accountType` 已初始赋值（默认值）
+- `this.email` 没有初始值，**会抛出错误**
+- `this.address` 声明了 `undefined` 类型，也就意味着不需要初始赋值
+
+
+## useUnknownInCatchVariables
+> `try/catch` 中 `catch` 块的参数默认类型为 `any`, 当在代码块中使用参数时不会出现抛出任何问题，即潜在的的问题不会在编译期暴露出来，就会导致运行时错误。 当设置为 `true` 时，TS 会将 `catch` 块中的参数类型设置为 `unknown`, 从而迫使用户增加类型约束，保证代码正确运行。
+
+**栗子**
+
+- useUnknownInCatchVariables: true **抛出错误**
+
+```tsx
+try {
+  throw 123;
+} catch(e) {
+  console.log(e.message); // error, e 的类型是 unknown，
+}
+```
+因此在使用 `e` 这个参数之前我们必须确认其类型，就不得不使用类型约束
+
+```tsx
+try {
+  throw 123;
+} catch(e) {
+  if (e instanceof Error) { // ok
+    console.log(e.message);
+  }
 }
 ```
