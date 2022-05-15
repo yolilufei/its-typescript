@@ -1,4 +1,3 @@
 
 
-
-'a'.ddd('b');
+export const demo = () => 1;

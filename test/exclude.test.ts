@@ -1,5 +1,4 @@
+import a from 'base';
+import * as ts from 'typescript';
+
 type T0 = Exclude<"a" | "b" | "c", "a">;
-     
-type T1 = Cus_Exclude<"a" | "b" | "c", "a" | "b">;
-     
-type T2 = Cus_Exclude<string | number | (() => void), Function>;

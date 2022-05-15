@@ -3,32 +3,9 @@ title: tsconfig.json 详解
 tag:  typescript
 categories: Typescript
 ---
-# tsconfig 属性详解
+# tsconfig 属性详解之 Modules
 
-|一级属性|分类|二级属性|类型|默认值|解释|版本|
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-|extend|||||继承外部tsconfig|[2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#configuration-inheritance)|
-|compilerOptions|Type Checking(类型检查)|[allowUnreachableCode](#allowUnreachableCode)|boolean\undefined|undefined|代码中允许存在永远不会执行的代码|
-|compilerOptions|Type Checking(类型检查)|[allowUnusedLabels](#allowUnusedLabels)|boolean | undefined\undefined|代码中允许存在不使用的标记语句|
-|compilerOptions|Type Checking(类型检查)|[alwaysStrict](#alwaysStrict)|boolean|true|代码始终保持严格模式|
-|compilerOptions|Type Checking(类型检查)|[exactOptionalPropertyTypes](#exactOptionalPropertyTypes)|boolean|true|严格按照可选属性类型列表定义属性值，不可赋值为undefined|
-|compilerOptions|Type Checking(类型检查)|[noFallthroughCasesInSwitch](#noFallthroughCasesInSwitch)|boolean|true|不允许 switch 中存在**空（不包含 break 或者 return）** case|
-|compilerOptions|Type Checking(类型检查)|[noImplicitAny](#noImplicitAny)|boolean|true|禁止属性类型是隐式any。true: 禁止; false: 忽略|
-|compilerOptions|Type Checking(类型检查)|[noImplicitOverride](#noImplicitOverride)|boolean|true|禁止不明确的重写。true: 禁止; false: 忽略|
-|compilerOptions|Type Checking(类型检查)|[noImplicitReturns](#noImplicitReturns)|boolean|false|禁止代码块有不明确的返回值。true: 禁止; false: 忽略|
-|compilerOptions|Type Checking(类型检查)|[noImplicitThis](#noImplicitThis)|boolean|true|禁止函数内部使用没有明确类型的this。true: 禁止; false: 忽略|
-|compilerOptions|Type Checking(类型检查)|[noPropertyAccessFromIndexSignature](#noPropertyAccessFromIndexSignature)|boolean|true|禁止使用`.`连接符访问未明确定义的属性|
-|compilerOptions|Type Checking(类型检查)|[noUncheckedIndexedAccess](https://www.typescriptlang.org/tsconfig#noUncheckedIndexedAccess)|boolean|false|为 true 时，当使用索引属性时，会默认为索引属性添加`undefined`属性值|
-|compilerOptions|Type Checking(类型检查)|[noUnusedLocals](https://www.typescriptlang.org/tsconfig#noUnusedLocals)|boolean|false|为 true 时，当存在未使用的局部变量时，会抛出错误|
-|compilerOptions|Type Checking(类型检查)|[noUnusedParameters](https://www.typescriptlang.org/tsconfig#noUnusedParameters)|boolean|false|为 true 时，当存在未使用的参数时，会抛出错误|
-|compilerOptions|Type Checking(类型检查)|[strictBindCallApply](https://www.typescriptlang.org/tsconfig#strictBindCallApply)|boolean|false|为 true ，当使用`call`、`bind`、`apply`调用函数时，提供正确的类型检查|
-|compilerOptions|Type Checking(类型检查)|[strictFunctionTypes](https://www.typescriptlang.org/tsconfig#strictFunctionTypes)|boolean|false|为 true ，对函数参数类型严格把控|
-|compilerOptions|Type Checking(类型检查)|[strictNullChecks](https://www.typescriptlang.org/tsconfig#strictNullChecks)|boolean|false|为 true ，对`null` 和 `undefined` 类型严格把控|
-|compilerOptions|Type Checking(类型检查)|[strictPropertyInitialization](#strictPropertyInitialization)|boolean|false|为 true ，当类属性需要赋值但未赋值时抛出错误|
-|compilerOptions|Type Checking(类型检查)|[useUnknownInCatchVariables](#useUnknownInCatchVariables)|boolean|false|为 true ，catch 块中的 error 参数类型设置为 unknown|
-|compilerOptions|Modules(模块规范)|[allowUmdGlobalAccess](#allowUmdGlobalAccess)|boolean|false|为 true ，catch 块中的 error 参数类型设置为 unknown|
-
-## allowUnreachableCode
+## allowUmdGlobalAccess
 
 **什么是 unreachable code**
 
@@ -58,32 +35,122 @@ const hasUnreachableCode = (a: number) => {
 
 eslint 同样支持设置规则`'no-unreachable': "error"`来避免程序中存在不可执行的代码。
 
-## allowUnusedLabels
+## baseUrl
+> 通过设置基准目录，我们可以使用引入npm包的方式引入项目内模块，从而摆脱繁琐的 ./ 和 ../
 
-**什么是 label**
+`baseUrl` 本身的意思是为 ts 提供模块路径解析所依赖的`根目录`，所以我觉得语义上不是太准确，`resolveBasePath` 可能会更清晰些(手动狗头) 
+`baseUrl` 默认值是 `./`, 这个值是相对于 `tsconfig.json` 文件所在的目录路径，也就是说，当设置为 `./` 时，`tsconfig.json`文件所在目录的一级子目录可以直接被解析无需使用`./`或`../`。
 
-在 js 中， label 表示标记语句，可以和 **break** 和 **continue** 语句一起使用，使用方式就是在一条语句前面加个可以引用的标识符。
+**baseUrl 为 . 或者 ./**   
 
-**当设置为以下值时**
-
-- undefined: 默认值，提供 warning 类型的建议
-- true: 忽略没有用的标记语句
-- false: 抛出编译错误
-
-标记语句现在很少使用了，因此这个类型设置大家估计都不是很熟悉，我们栗子：熟悉下
-
-```tsx
-let str = '';
-
-loop1: // loop1 这个标记语句是有用的，在 for 循环里用到了
-for (let i = 0; i < 5; i++) {
-  if (i === 1) {
-    continue loop1;
+`tsconfig.json` 文件配置 
+```json
+{
+  "compilerOptions": {
+    ...
+    "baseUrl": "./",
+    ...
   }
-  str = str + i;
 }
+```
+目录结构
+```json
+src
+├── index.ts
+test
+├── baseUrl
+│   └── base.ts
+tsconfig.json
+```
+代码
+```tsx
+// test/baseUrl/base
+const  a = 2;
+export default a;
+// src/index.ts
+import a from 'test/baseUrl/base'; // ok
+import * as ts from 'typescript'; // ok
+```
+`baseUrl` 值为 `./`, 即 `tsconfig.json` 文件所在目录（可以理解为根目录），ts 在解析模块时会优先在根目录查找模块，因此 `import a from 'test/baseUrl/base';` 可以被正常解析。  
 
-console.log(str); // 0234
+看下面这个场景 
+
+**baseUrl 为 test**   
+
+`tsconfig.json` 文件配置 
+```json
+{
+  "compilerOptions": {
+    ...
+    "baseUrl": "test",
+    ...
+  }
+}
+```
+目录结构
+```json
+src
+├── index.ts
+test
+├── baseUrl
+│   └── base.ts
+tsconfig.json
+```
+代码
+```tsx
+// test/baseUrl/base
+const  a = 2;
+export default a;
+// src/index.ts
+import a from 'test/baseUrl/base'; // error
+import a from 'baseUrl/base'; // ok
+import * as ts from 'typescript'; // ok
+```
+`baseUrl` 值为 `test`， ts 在解析模块时会优先在`test/`下查找模块。 `import a from 'test/baseUrl/base';` 完整路径就是
+`import a from 'test/test/baseUrl/base';`，test 目录下并没有 test 子目录，因此解析失败，而 `import a from 'baseUrl/base';`，baseUrl 子目录存在于 test 目录下，则可以正常解析。 
+
+接下来看另外一个场景，项目中使用多个`tsconfig.json`的情况 
+目录结构
+```json
+src
+├── index.ts
+test
+├── baseUrl
+│   └── base.ts
+├── index.ts
+├── tsconfig.json
+tsconfig.json
+```
+外层`tsconfig.json` 文件配置 
+```json
+{
+  "compilerOptions": {
+    ...
+    "baseUrl": "test",
+    ...
+  }
+}
+```
+内层`tsconfig.json` 文件配置 
+```json
+{
+  "compilerOptions": {
+    ...
+    "baseUrl": "./baseUrl",
+    ...
+  }
+}
+```
+
+代码
+```tsx
+// test/baseUrl/base
+const  a = 2;
+export default a;
+// src/index.ts
+import a from 'baseUrl/base'; // ok
+// test/index.ts
+import a from 'base'; // ok
 ```
 
 **下面这个是没有用到的标记语句**
