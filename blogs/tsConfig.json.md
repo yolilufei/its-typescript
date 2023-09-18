@@ -95,8 +95,8 @@ switch(match) {
 
 #### 属性值
 
-- true
-- false
+- `true`
+- `false`
 
 #### 属性释义
 
@@ -108,14 +108,14 @@ switch(match) {
 
 #### 属性值
 
-- true
-- false
+- `true`
+- `false`
 
 #### 属性释义
 
-为 `true` 时，在生产 js 文件时也会生成对应的 .d.ts 文件。
+为 `true` 时，在生产 js 文件时也会生成对应的 `.d.ts` 文件。
 
-为 `false` 时，不会生产 .d.ts 文件。
+为 `false` 时，不会生产 `.d.ts` 文件。
 
 ### 关联属性
 - [composite](#composite) 当 `composite` 属性启用(true)时，`declaration` 默认开启(true)
@@ -126,15 +126,31 @@ switch(match) {
 
 #### 属性值
 
-- string
+- `string`
 
 #### 属性释义
 
-配置生成的 .d.ts 文件目录
+配置生成的 `.d.ts` 文件目录
 
 #### example
 
-1. 相对路径目录
+1. 不指定时
+
+    ```json
+    // tsconfig.json
+        {
+            "compilerOptions": {
+                //"declarationDir": "./"
+            }
+        }
+    // 执行编译，环境：MacOS，
+    // 命令行执行指令：tsc --declaration index.ts
+    // 执行结果：在编译文件所在目录生成 .d.ts 文件
+    ```
+
+    不指定 `declarationDir` 时，tsc 会在编译的每一个源文件同目录下生成 `.d.ts` 文件
+
+2. 相对路径目录（**推荐**）
 
     ```json
     // tsconfig.json
@@ -150,7 +166,7 @@ switch(match) {
 
     使用相对目录时，相对的是 `tsconfig.json` 所在的目录。假设，`tsconfig.json` 在项目根目录下，最终 `declarationDir` 的完整路径就是 `/项目路径/types`
 
-2. 绝对路径的目录
+3. 绝对路径的目录
 
     ```json
     // tsconfig.json
@@ -162,11 +178,152 @@ switch(match) {
     // 执行编译，环境：MacOS，命令行执行指令：tsc --declarationDir /current-project-path/types index.ts
     // 执行结果：在当前项目下的types目录下生成 index.d.ts 文件
     ```
-    当指定的路径以`/`开头，表示该路径为绝对路径，当当前用户在该目录下有写权限时，生成的 .d.ts 文件就会放到该目录下。
+
+    当指定的路径以`/`开头，表示该路径为绝对路径，当当前用户在该目录下有写权限时，生成的 `.d.ts` 文件就会放到该目录下。
 
     可以看到，使用绝对路径要比相对路径长很多，而且还容易指定到错误的目录，因此，一般不推荐使用该方式。
-3. 指定rootDir
-4. 指定outDir
+4. 指定 `rootDir`
+
+    当指定 `rootDir` 时，是否会影响 `declarationDir` 最终的路径呢？我们来试一下
+
+    ```json
+    // tsconfig.json
+        {
+            "compilerOptions": {
+                "rootDir": "src",
+                "declarationDir": "types"
+            }
+        }
+    // 执行编译，环境：MacOS
+    // 命令行执行指令：tsc --rootDir src --declarationDir /current-project-path/types index.ts
+    // 执行结果：在当前tsconfig.json所在目录下的types目录下生成 index.d.ts 文件
+    ```
+
+    可以看出，**rootDir 并不会影响 declarationDir 的最终路径**
+
+5. 指定 `outDir`
+
+    测试操作同3，此处省略。
+
+    测试结果表明：**outDir 同样不会影响 declarationDir 的最终路径**
+
+#### 总结
+
+1. 当不指定 `declarationDir` 时，生成的 `.d.ts` 文件所在目录即当前编译的文件所在目录
+2. 推荐使用**相对路径**指定 `.d.ts` 文件目录
+3. `rootDir` 和 `outDir` 对 `declarationDir` 最终路径没有影响
+4. 只有当 `declaration` 属性生效时，`declarationDir` 属性才生效
+
+
+### declarationMap
+
+#### 属性值
+
+- `string`
+
+#### 属性释义
+
+生成 `.d.ts` map 文件，指向源文件。生成的 map 文件如下：
+
+```json
+    {
+    "version": 3,
+    "file": "index.d.ts",
+    "sourceRoot": "",
+    "sources": [
+        "index.ts"
+    ],
+    "names": [],
+    "mappings": "AAUA,eAAO,MAAM,CAAC,MAAM,CAAC"
+    }
+```
+
+### downlevelIteration
+
+#### 属性值
+
+- `true`
+- `false`
+
+#### 属性释义
+
+
+### importHelpers
+
+#### 属性值
+
+- `true`
+- `false`
+
+#### 属性释义
+
+允许通过 `tslib` 包导入帮助函数，替换文件内生成的帮助函数，以减少代码冗余，降低包体积。
+
+当在源码中使用了目标环境不支持的API时，例如：在源码中使用 `...[]` 解构 或者 `for of` 迭代，但是
+代码需要运行在 ES5 中，ts 会提供内置的 **polyfill** 实现兼容。默认情况下，ts 会在每个需要兼容的文件内写入兼容性代码，像下面这样：
+
+```typescript
+    // a.ts
+    console.log([1, ...[2, 3, 4]]);
+    // b.ts
+    console.log([1, ...[2, 3, 4]]);
+```
+
+执行 `tsc` 编译后，生成的代码如下：
+
+```typescript
+    // a.js
+    "use strict";
+    var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    };
+    console.log(__spreadArray([1], [2, 3, 4], false));
+
+    // b.js
+    "use strict";
+    var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+        if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+            if (ar || !(i in from)) {
+                if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+                ar[i] = from[i];
+            }
+        }
+        return to.concat(ar || Array.prototype.slice.call(from));
+    };
+    console.log(__spreadArray([1], [2, 3, 4], false));
+```
+
+可以看到，a.js 和 b.js 都包含了 `__spreadArray` 函数，导致生成的文件包含了重复代码，增大了代码体积。如果是实际项目，那体积的增加是不可忽视的。为了解决重复代码问题，ts 提供了 `importHelpers` 选项，配合 `tslib` 包一起使用，使 ts 提供的帮助函数由文件内插入改为 `tslib`导入，多个文件共享同一份代码，有效的解决代码冗余问题。
+
+`importHelpers` 配合 `tslib` 使用方式如下：
+
+1. 首先下载 `tslib` 包，注意阅读 `tslib` [README](https://www.npmjs.com/package/tslib), 针对不同的 ts 版本需要下载不同的 `tslib`
+
+    `npm install tslib` `// 支持 ts 3.9.2 及后续版本`
+   
+    `npm install tslib@^1` `// 支持 ts > 2.3.2 <=3.8.4`
+
+    `npm install tslib@^1.6.1` `// 支持 ts <= 2.3.2`
+
+2. 在 `tsconfig.json` 中开启 `importHelpers` 选项，即 `importHelpers: true`
+3. 执行 ts 编译，即可看到生成的代码中从 `tslib` 导出的帮助函数
+
+```typescript
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var tslib_1 = require("tslib");
+    console.log(tslib_1.__spreadArray([1], [2, 3, 4], false));
+    exports.default = 1;
+```
+
+**注意**，只有 `ESModule` 模块才会导入 `tslib`, 全局文件仍然采用文件内插入帮助函数的形式。
+
 
 ### noEmit
 
