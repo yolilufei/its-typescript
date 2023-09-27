@@ -2,13 +2,13 @@
 
 ### allowUnreachableCode
 
-#### 属性值
+#### 选项值
 
 - undefined 默认值
 - true
 - false
 
-#### 属性释义
+#### 选项释义
 
 允许代码块中存在永远都不会执行的代码。当设置不同值时，ts 行为如下
 
@@ -38,23 +38,23 @@
 
 ### alwaysStrict
 
-#### 属性值
+#### 选项值
 
 - true 默认值
 - false
 
-#### 属性释义
+#### 选项释义
 
-开启[严格模式](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode)。一般来说，现代项目生成的js文件都是默认严格模式的，因此无需过多关注此属性，除非你的项目存在非严格模式文件。
+开启[严格模式](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Strict_mode)。一般来说，现代项目生成的js文件都是默认严格模式的，因此无需过多关注此选项，除非你的项目存在非严格模式文件。
 
 ### noFallthroughCasesInSwitch
 
-#### 属性值
+#### 选项值
 
 - true
 - false
 
-#### 属性释义
+#### 选项释义
 
 当为 true 时，switch 块中任意**非空case子句**都必须要有**结束声明**，避免case子句执行完成后继续执行下一个case子句。为 false 则不校验。
 `非空case子句`：case 子句块内容不为空，例如：
@@ -93,12 +93,12 @@ switch(match) {
 
 ### allowArbitraryExtensions from v5.0
 
-#### 属性值
+#### 选项值
 
 - `true`
 - `false`
 
-#### 属性释义
+#### 选项释义
 
 允许任意扩展类型文件，
 
@@ -106,29 +106,29 @@ switch(match) {
 
 ### declaration
 
-#### 属性值
+#### 选项值
 
 - `true`
 - `false`
 
-#### 属性释义
+#### 选项释义
 
 为 `true` 时，在生产 js 文件时也会生成对应的 `.d.ts` 文件。
 
 为 `false` 时，不会生产 `.d.ts` 文件。
 
-### 关联属性
-- [composite](#composite) 当 `composite` 属性启用(true)时，`declaration` 默认开启(true)
+### 关联选项
+- [composite](#composite) 当 `composite` 选项启用(true)时，`declaration` 默认开启(true)
 - [declarationDir](#declarationDir)
 - [emitDeclarationOnly](#emitDeclarationOnly)
 
 ### declarationDir
 
-#### 属性值
+#### 选项值
 
 - `string`
 
-#### 属性释义
+#### 选项释义
 
 配置生成的 `.d.ts` 文件目录
 
@@ -212,16 +212,16 @@ switch(match) {
 1. 当不指定 `declarationDir` 时，生成的 `.d.ts` 文件所在目录即当前编译的文件所在目录
 2. 推荐使用**相对路径**指定 `.d.ts` 文件目录
 3. `rootDir` 和 `outDir` 对 `declarationDir` 最终路径没有影响
-4. 只有当 `declaration` 属性生效时，`declarationDir` 属性才生效
+4. 只有当 `declaration` 选项生效时，`declarationDir` 选项才生效
 
 
 ### declarationMap
 
-#### 属性值
+#### 选项值
 
 - `string`
 
-#### 属性释义
+#### 选项释义
 
 生成 `.d.ts` map 文件，指向源文件。生成的 map 文件如下：
 
@@ -240,22 +240,76 @@ switch(match) {
 
 ### downlevelIteration
 
-#### 属性值
+#### 选项值
 
 - `true`
 - `false`
 
-#### 属性释义
+#### 选项释义
 
+当在源码中使用了目标环境不支持的API或语法时(例如：在源码中使用 `...[]` 解构 或者 `for of` 迭代，但是
+代码需要运行在 ES5 中)，ts 会提供内置的 **polyfill** 实现兼容。默认情况下，ts 会在每个需要兼容的文件内写入兼容性代码，像下面这样：
 
+```typescript
+    // 源码使用ES6的模板字符串语法
+    const a = 1;
+    const b = `${a > 1 ? '2' : '3'}23`;
+
+    // tsconfig.json 配置如下
+    {
+        "target": "ES5",
+        "downlevelIteration": true
+    }
+```
+
+上面代码块中，指定了生成代码所在环境为 ES5，而模板字符串是 ES6 语法，在 ES5 中不存在。ts 在检测到该情况后，会查看编译配置选项(tsconfig.json)中是否开启了 `downlevelIteration`，如果未开启，ts 会提示用户开启该选项。 提示信息类似如下：
+
+```typescript
+只有在使用 "--downlevelIteration" 标志或 "--target" 为 "es2015" 或更高版本时，才能循环访问类型“"123"”。ts(2802)
+```
+
+如果开启了 `downlevelIteration`, ts 在编译时会提供兼容代码将较新的API和语法兼容到指定的环境(如 ES6 到 ES5)。
+
+执行 `tsc` 编译后，生成的代码如下：
+
+```typescript
+    "use strict";
+    var a = 1;
+    var b = "".concat(a > 1 ? '2' : '3', "23");
+```
+
+不要被 `downlevelIteration` 语义迷惑，认为它只能兼容迭代器相关API或语法。实际上，任意较新的API和语法它都可以兼容。
+
+再看一个兼容`class`的例子。
+
+```typescript
+    // 源文件：index.ts
+    class A {
+     
+        ma(params: any) {
+            console.log(params);    
+        }
+    }
+    // 生成文件：index.js
+    "use strict";
+    var A = /** @class */ (function () {
+        function A() {
+        }
+        A.prototype.ma = function (params) {
+            console.log(params);
+        };
+        return A;
+    }());
+
+```
 ### importHelpers
 
-#### 属性值
+#### 选项值
 
 - `true`
 - `false`
 
-#### 属性释义
+#### 选项释义
 
 允许通过 `tslib` 包导入帮助函数，替换文件内生成的帮助函数，以减少代码冗余，降低包体积。
 
@@ -324,22 +378,50 @@ switch(match) {
 
 **注意**，只有 `ESModule` 模块才会导入 `tslib`, 全局文件仍然采用文件内插入帮助函数的形式。
 
+### emitDeclarationOnly
+
+#### 选项值
+
+- `true`
+- `false`
+
+#### 选项释义
+
+顾名思义，该选项开启时，ts 只会输出 `.d.ts` 文件，而不会生成 `.js` 文件。
+
+注意，想开启该选项，需要先开启 `declaration` 选项。
+
+以下场景，比较适合开启该选项
+
+1. 有其他编译工具（babel）生成代码
+2. 仅需要生成 `.d.ts` 声明文件, 例如给老项目生成 `.d.ts` 文件。
+
+### importsNotUsedAsValues --Deprecated
+
+#### 选项值
+
+- `remove`
+- `preserve`
+- `error`
+#### 选项释义
+
+
 
 ### noEmit
 
-#### 属性值
+#### 选项值
 
 - true
 - false
 
-#### 属性释义
+#### 选项释义
 
 为 `true` 时，执行 ts 编译不会有任何输出，包括 js 文件、map 文件以及 .d.ts 文件。
 
 为 `false` 时，不会影响编译文件输出。
 
-开启这个属性会阻止所有文件的生成，此时，ts 作为IDE（vsCode）的智能提示和静态类型检查工具使用。
+开启这个选项会阻止所有文件的生成，此时，ts 作为IDE（vsCode）的智能提示和静态类型检查工具使用。
 
-**什么场景下需要该属性？**
+**什么场景下需要该选项？**
 
 1. 有其他的 transpiler (babel, [swc](https://github.com/swc-project/swc)) 生成文件。
